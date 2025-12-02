@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 0%; /* Black */
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 4%; /* Near Black */
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 4%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 100% 50%; /* Red */
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 64%;
+
+    --accent: 0 100% 60%; /* Lighter Red */
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 100% 50%; /* Red */
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 100% 25%; /* Darker Red */
+    --input: 0 0% 15%;
+    --ring: 0 100% 60%; /* Lighter Red */
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 4%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 100% 50%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 64%;
+    --accent: 0 100% 60%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 100% 25%;
+    --input: 0 0% 15%;
+    --ring: 0 100% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: repeating-linear-gradient(
+      0deg,
+      hsla(0, 0%, 0%, 0) 0px,
+      hsla(0, 0%, 0%, 0) 1px,
+      hsla(0, 100%, 50%, 0.04) 1px,
+      hsla(0, 100%, 50%, 0.04) 2px
+    );
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 9999;
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "camera": {
+    "enabled": false,
+    "path": "/dev/video0",
+    "type": "v4l2",
+    "description": "USB Camera or webcam device path"
+  },
+  "lidar": {
+    "enabled": false,
+    "path": "/dev/ttyUSB0",
+    "type": "serial",
+    "baudrate": 115200,
+    "description": "LiDAR sensor serial port path"
+  },
+  "thermal": {
+    "enabled": false,
+    "path": "/dev/i2c-1",
+    "type": "i2c",
+    "address": "0x5A",
+    "description": "Thermal camera I2C bus and address"
+  },
+  "water_pressure": {
+    "enabled": false,
+    "path": "/dev/ttyACM0",
+    "type": "serial",
+    "baudrate": 9600,
+    "description": "Water pressure sensor serial port path"
+  },
+  "joystick": {
+    "enabled": false,
+    "path": "/dev/input/js0",
+    "type": "linux_joystick",
+    "description": "Joystick input device path"
+  },
+  "motor_controller": {
+    "enabled": false,
+    "path": "/dev/ttyUSB1",
+    "type": "serial",
+    "baudrate": 9600,
+    "description": "Motor controller serial port path"
+  }
+}
+

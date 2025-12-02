@@ -1,0 +1,50 @@
+{
+  "_comment": "Copy this file to hardware_config.json and update paths for your hardware",
+  
+  "camera": {
+    "enabled": true,
+    "path": "/dev/video0",
+    "type": "v4l2",
+    "description": "USB Camera - find with: ls /dev/video*"
+  },
+  
+  "lidar": {
+    "enabled": true,
+    "path": "/dev/ttyUSB0",
+    "type": "serial",
+    "baudrate": 115200,
+    "description": "LiDAR sensor - find with: ls /dev/ttyUSB*"
+  },
+  
+  "thermal": {
+    "enabled": true,
+    "path": "/dev/i2c-1",
+    "type": "i2c",
+    "address": "0x5A",
+    "description": "Thermal camera - find with: i2cdetect -l"
+  },
+  
+  "water_pressure": {
+    "enabled": true,
+    "path": "/dev/ttyACM0",
+    "type": "serial",
+    "baudrate": 9600,
+    "description": "Water pressure sensor - find with: ls /dev/ttyACM*"
+  },
+  
+  "joystick": {
+    "enabled": true,
+    "path": "/dev/input/js0",
+    "type": "linux_joystick",
+    "description": "Joystick - find with: ls /dev/input/js*"
+  },
+  
+  "motor_controller": {
+    "enabled": true,
+    "path": "/dev/ttyUSB1",
+    "type": "serial",
+    "baudrate": 9600,
+    "description": "Motor controller - find with: ls /dev/ttyUSB*"
+  }
+}
+
