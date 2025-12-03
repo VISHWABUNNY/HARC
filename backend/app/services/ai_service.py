@@ -10,21 +10,42 @@ class AIService:
         # Force offline mode - no external API calls
         self.model = None
         self.offline_mode = True
+        
+        # Initialize ML detector (will load model if available)
+        self.ml_detector = None
+        try:
+            from ml.detector import HumanDetector
+            self.ml_detector = HumanDetector()
+            if self.ml_detector.is_ready():
+                print("✅ AI Service: ML model loaded and ready for detection")
+            else:
+                print("⚠️  AI Service: ML model not found. Using fallback detection.")
+        except Exception as e:
+            print(f"⚠️  AI Service: Could not initialize ML detector: {e}")
+            print("   Using fallback detection methods.")
+        
         print("AI Service initialized in OFFLINE mode. All features use local processing.")
 
     async def track_humans_from_camera(self, image_data_uri: str) -> List[HumanDetection]:
         """Track humans from live camera feed using offline/local processing."""
-        # Offline mode: Use local image processing (OpenCV-based detection)
+        # Offline mode: Use ML model if available, otherwise fallback
         try:
-            # In offline mode, use local computer vision processing
-            # For now, return mock detection - can be enhanced with OpenCV Haar Cascades
-            # or other offline ML models if needed
+            # Try ML model detection first
+            if self.ml_detector and self.ml_detector.is_ready():
+                humans = self.ml_detector.detect(image_data_uri)
+                if humans:
+                    system_service.add_log(LogCategory.AI, f"Detected {len(humans)} human(s) via ML model (OFFLINE MODE).")
+                return humans
+            
+            # Fallback to offline processing
             humans = self._process_image_offline(image_data_uri, "camera")
             if humans:
-                system_service.add_log(LogCategory.AI, f"Detected {len(humans)} human(s) via camera tracking (OFFLINE MODE).")
+                system_service.add_log(LogCategory.AI, f"Detected {len(humans)} human(s) via camera tracking (OFFLINE MODE - FALLBACK).")
             return humans
         except Exception as e:
             print(f"Error in camera tracking: {e}")
+            import traceback
+            traceback.print_exc()
             return self._mock_human_detection()
 
     async def track_humans_from_lidar(self, lidar_data_uri: str, camera_feed_uri: Optional[str] = None) -> List[HumanDetection]:

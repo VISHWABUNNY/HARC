@@ -14,3 +14,8 @@ pynvml==11.5.0
 python-evdev==1.9.0
 pyserial==3.5
 
+# ML Model Support (Optional - install if using PyTorch/TensorFlow models)
+# torch>=2.0.0  # Uncomment for PyTorch model support
+# tensorflow>=2.13.0  # Uncomment for TensorFlow model support
+# onnxruntime>=1.15.0  # Uncomment for ONNX runtime support (alternative to OpenCV DNN)
+
