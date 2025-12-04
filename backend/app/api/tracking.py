@@ -10,11 +10,20 @@ auto_targeting = get_auto_targeting_service()
 @router.post("/camera", response_model=TrackingResponse)
 async def track_humans_camera(
     request: TrackingRequest,
-    ai_mode: str = Query("Manual", description="AI mode: Manual or Full Auto")
+    ai_mode: str = Query("Manual", description="AI mode: Manual, Manual + Aim-Bot, or Full Auto")
 ):
     """Track humans from live camera feed."""
     try:
         humans = await ai_service.track_humans_from_camera(request.cameraFeedDataUri)
+        
+        # Update joystick bridge with detected humans for aim-bot assistance
+        from app.services.joystick_motor_bridge import get_joystick_motor_bridge
+        try:
+            bridge = get_joystick_motor_bridge()
+            if bridge:
+                bridge.update_detected_humans(humans)
+        except:
+            pass  # Bridge might not be initialized
         
         # If Full Auto mode, process automated targeting
         if ai_mode == "Full Auto" and auto_targeting.is_active:

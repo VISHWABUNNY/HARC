@@ -10,6 +10,7 @@ class CannonReadiness(str, Enum):
 
 class SystemMode(str, Enum):
     MANUAL = "Manual"
+    MANUAL_AIMBOT = "Manual + Aim-Bot"
     FULL_AUTO = "Full Auto"
 
 class LogCategory(str, Enum):

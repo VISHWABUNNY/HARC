@@ -140,11 +140,13 @@ export function WeaponControlCard({ systemMode }: { systemMode: SystemMode }) {
     }
   }, [weaponStatus, toast]);
 
-  const isManual = systemMode === 'Manual';
+  const isManual = systemMode === 'Manual' || systemMode === 'Manual + Aim-Bot';
   const isFullAuto = systemMode === 'Full Auto';
+  const isAimbotMode = systemMode === 'Manual + Aim-Bot';
   
   const getStatusText = () => {
     if (isFullAuto) return "AI CONTROL ACTIVE";
+    if (isAimbotMode) return "MANUAL + AIM-BOT";
     return "MANUAL CONTROL";
   }
 

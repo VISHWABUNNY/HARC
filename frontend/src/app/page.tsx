@@ -5,7 +5,7 @@ import Header from '@/components/layout/header';
 import FooterConsole from '@/components/layout/footer-console';
 import DashboardGrid from '@/components/dashboard/dashboard-grid';
 
-export type SystemMode = "Manual" | "Full Auto";
+export type SystemMode = "Manual" | "Manual + Aim-Bot" | "Full Auto";
 
 export default function Home() {
   const [systemMode, setSystemMode] = useState<SystemMode>('Manual');

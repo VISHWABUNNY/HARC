@@ -141,7 +141,8 @@ export function LiveFeedCard({ systemMode }: { systemMode: SystemMode }) {
 
   useEffect(() => {
     let intervalId: NodeJS.Timeout;
-    if (systemMode === 'Full Auto' && hasCameraPermission) {
+    // Auto-analyze in Full Auto mode, and also in Manual + Aim-Bot mode for aim-bot assistance
+    if ((systemMode === 'Full Auto' || systemMode === 'Manual + Aim-Bot') && hasCameraPermission) {
       handleAnalyzeFeed();
       intervalId = setInterval(handleAnalyzeFeed, 5000);
     }
@@ -272,7 +273,7 @@ export function LiveFeedCard({ systemMode }: { systemMode: SystemMode }) {
           </div>
         </div>
         <div className="mt-3 sm:mt-4 flex-grow flex items-center justify-center">
-          <Button onClick={handleAnalyzeFeed} disabled={isLoading || systemMode !== 'Manual' || (!hasCameraPermission && trackerMode !== 'lidar')} variant="destructive" className="w-full text-xs sm:text-sm">
+          <Button onClick={handleAnalyzeFeed} disabled={isLoading || (systemMode !== 'Manual' && systemMode !== 'Manual + Aim-Bot') || (!hasCameraPermission && trackerMode !== 'lidar')} variant="destructive" className="w-full text-xs sm:text-sm">
             {isLoading ? <Loader2 className="mr-2 h-3 w-3 sm:h-4 sm:w-4 animate-spin" /> : getTrackerIcon()}
             <span className="ml-2 hidden sm:inline">Track Humans ({getTrackerLabel()})</span>
             <span className="ml-2 sm:hidden">Track</span>

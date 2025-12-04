@@ -87,6 +87,11 @@ async def start_auto_targeting():
     """Start automated targeting system (Full Auto mode)."""
     try:
         auto_targeting.start()
+        # Update joystick bridge mode
+        from app.services.joystick_motor_bridge import get_joystick_motor_bridge
+        bridge = get_joystick_motor_bridge()
+        if bridge:
+            bridge.set_mode("Full Auto")
         return {"status": "success", "message": "Automated targeting system started"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error starting auto targeting: {str(e)}")
@@ -96,6 +101,11 @@ async def stop_auto_targeting():
     """Stop automated targeting system."""
     try:
         auto_targeting.stop()
+        # Update joystick bridge mode
+        from app.services.joystick_motor_bridge import get_joystick_motor_bridge
+        bridge = get_joystick_motor_bridge()
+        if bridge:
+            bridge.set_mode("Manual")
         return {"status": "success", "message": "Automated targeting system stopped"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error stopping auto targeting: {str(e)}")
@@ -107,3 +117,45 @@ async def get_auto_targeting_status():
         return auto_targeting.get_status()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error getting auto targeting status: {str(e)}")
+
+@router.post("/aimbot-assistance/start")
+async def start_aimbot_assistance():
+    """Start aim-bot assistance (Manual + Aim-Bot mode)."""
+    try:
+        from app.services.aimbot_assistance_service import get_aimbot_assistance_service
+        aimbot = get_aimbot_assistance_service()
+        aimbot.start()
+        # Update joystick bridge mode
+        from app.services.joystick_motor_bridge import get_joystick_motor_bridge
+        bridge = get_joystick_motor_bridge()
+        if bridge:
+            bridge.set_mode("Manual + Aim-Bot")
+        return {"status": "success", "message": "Aim-bot assistance started"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error starting aim-bot assistance: {str(e)}")
+
+@router.post("/aimbot-assistance/stop")
+async def stop_aimbot_assistance():
+    """Stop aim-bot assistance."""
+    try:
+        from app.services.aimbot_assistance_service import get_aimbot_assistance_service
+        aimbot = get_aimbot_assistance_service()
+        aimbot.stop()
+        # Update joystick bridge mode
+        from app.services.joystick_motor_bridge import get_joystick_motor_bridge
+        bridge = get_joystick_motor_bridge()
+        if bridge:
+            bridge.set_mode("Manual")
+        return {"status": "success", "message": "Aim-bot assistance stopped"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error stopping aim-bot assistance: {str(e)}")
+
+@router.get("/aimbot-assistance/status")
+async def get_aimbot_assistance_status():
+    """Get aim-bot assistance status."""
+    try:
+        from app.services.aimbot_assistance_service import get_aimbot_assistance_service
+        aimbot = get_aimbot_assistance_service()
+        return aimbot.get_status()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error getting aim-bot assistance status: {str(e)}")

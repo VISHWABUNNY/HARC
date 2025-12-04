@@ -53,7 +53,7 @@ export interface TrackingResponse {
 export interface SystemStats {
   totalTargetsDetected: number;
   cannonReadiness: "ARMED" | "SAFE" | "MAINTENANCE";
-  aiMode: "Manual" | "Full Auto";
+  aiMode: "Manual" | "Manual + Aim-Bot" | "Full Auto";
 }
 
 export interface SystemVitals {
@@ -225,6 +225,33 @@ export async function getAutoTargetingStatus(): Promise<any> {
   const response = await fetchWithTimeout(`${API_BASE_URL}/api/system/auto-targeting/status`);
   if (!response.ok) {
     throw new Error(`Failed to get auto targeting status: ${response.statusText}`);
+  }
+  return response.json();
+}
+
+// Aim-Bot Assistance APIs
+export async function startAimbotAssistance(): Promise<void> {
+  const response = await fetchWithTimeout(`${API_BASE_URL}/api/system/aimbot-assistance/start`, {
+    method: 'POST',
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to start aim-bot assistance: ${response.statusText}`);
+  }
+}
+
+export async function stopAimbotAssistance(): Promise<void> {
+  const response = await fetchWithTimeout(`${API_BASE_URL}/api/system/aimbot-assistance/stop`, {
+    method: 'POST',
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to stop aim-bot assistance: ${response.statusText}`);
+  }
+}
+
+export async function getAimbotAssistanceStatus(): Promise<any> {
+  const response = await fetchWithTimeout(`${API_BASE_URL}/api/system/aimbot-assistance/status`);
+  if (!response.ok) {
+    throw new Error(`Failed to get aim-bot assistance status: ${response.statusText}`);
   }
   return response.json();
 }

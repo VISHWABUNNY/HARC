@@ -43,12 +43,19 @@ class SystemService:
         # Start joystick-motor bridge if both are enabled (lazy import to avoid circular dependency)
         if (self.hw_config.is_enabled("joystick") and 
             self.hw_config.is_enabled("motor_controller")):
-            from app.services.joystick_motor_bridge import start_joystick_motor_bridge
+            from app.services.joystick_motor_bridge import start_joystick_motor_bridge, get_joystick_motor_bridge
             start_joystick_motor_bridge()
+            self.joystick_bridge = get_joystick_motor_bridge()
+        else:
+            self.joystick_bridge = None
         
         # Initialize auto targeting service (starts when Full Auto mode is activated)
         from app.services.auto_targeting_service import get_auto_targeting_service
         self.auto_targeting = get_auto_targeting_service()
+        
+        # Initialize aim-bot assistance service (starts when Manual + Aim-Bot mode is activated)
+        from app.services.aimbot_assistance_service import get_aimbot_assistance_service
+        self.aimbot_assistance = get_aimbot_assistance_service()
     
     def _initialize_logs(self):
         """Initialize with some system logs."""
@@ -81,10 +88,15 @@ class SystemService:
         # Count detected humans from recent tracking logs
         total_targets = len([log for log in self.logs if "detected" in log.message.lower() or "human" in log.message.lower()])
         
+        # Validate mode
+        valid_modes = ["Manual", "Manual + Aim-Bot", "Full Auto"]
+        if ai_mode not in valid_modes:
+            ai_mode = "Manual"
+        
         return SystemStats(
             totalTargetsDetected=total_targets,
             cannonReadiness=CannonReadiness.ARMED if self.water_pressure > 20 else CannonReadiness.SAFE,
-            aiMode=SystemMode(ai_mode) if ai_mode in ["Manual", "Full Auto"] else SystemMode.MANUAL
+            aiMode=SystemMode(ai_mode)
         )
     
     def _get_cpu_temperature(self) -> Optional[float]:
