@@ -27,6 +27,10 @@
   "build": {
     "appId": "com.harc.system",
     "productName": "H.A.R.C. System",
+    "win": {
+      "target": "nsis",
+      "icon": "assets/logo.png"
+    },
     "linux": {
       "target": [
         {
@@ -43,7 +47,7 @@
         }
       ],
       "category": "Utility",
-      "icon": "../assets/icon.png"
+      "icon": "assets/logo.png"
     },
     "files": [
       "electron/**/*",

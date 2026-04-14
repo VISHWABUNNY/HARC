@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu } = require('electron');
+const { app, BrowserWindow, Menu, nativeImage } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
 const fs = require('fs');
@@ -15,8 +15,10 @@ const FRONTEND_SCRIPT = path.join(FRONTEND_DIR, 'node_modules', '.bin', 'next');
 
 function createWindow() {
   // Create the browser window
-  const iconPath = path.join(__dirname, '..', '..', 'assets', 'icon.png');
+  const iconPath = path.join(__dirname, '..', 'assets', 'logo.png');
   const hasIcon = fs.existsSync(iconPath);
+  console.log(`[Icon Debug] Path: ${iconPath}`);
+  console.log(`[Icon Debug] Exists: ${hasIcon}`);
   
   mainWindow = new BrowserWindow({
     width: 1920,
@@ -33,6 +35,11 @@ function createWindow() {
     autoHideMenuBar: false,
     backgroundColor: '#000000'
   });
+
+  if (hasIcon) {
+    const icon = nativeImage.createFromPath(iconPath);
+    mainWindow.setIcon(icon);
+  }
 
   // Prevent navigation to external URLs
   mainWindow.webContents.on('will-navigate', (event, url) => {
@@ -106,7 +113,9 @@ function startBackend() {
     console.log('Starting backend server...');
     
     const pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
-    const venvPython = path.join(BACKEND_DIR, 'venv', 'bin', 'python');
+    const venvPython = process.platform === 'win32'
+      ? path.join(BACKEND_DIR, 'venv', 'Scripts', 'python.exe')
+      : path.join(BACKEND_DIR, 'venv', 'bin', 'python');
     
     // Try venv python first, fallback to system python
     const pythonPath = fs.existsSync(venvPython) ? venvPython : pythonCmd;

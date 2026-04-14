@@ -1,385 +1,100 @@
 # H.A.R.C. System (Hydro Automated Retro Cannon)
 
-A water-based weapon system with human tracking capabilities using AI-powered detection. Runs as a standalone Ubuntu desktop application.
+A high-performance water-based weapon system featuring human tracking capabilities through multi-modal AI detection (Camera, LiDAR, Thermal).
+
+> [!IMPORTANT]
+> **Cross-Platform Support**: This application is fully compatible with both **Ubuntu (Linux)** and **Windows**.
 
 ## 🚀 Quick Start
 
-### Installation
+The H.A.R.C. System uses a centralized management script (`manage.js`) to ensure consistent behavior across all operating systems.
 
-**Option 1: Automated Install (Recommended)**
+### Installation & Startup
+
+#### 🐧 On Ubuntu (Linux)
+You can use the shell wrapper (requires execute permission) or run directly with Node:
 ```bash
-chmod +x install.sh
-./install.sh
+# Recommended
+node manage.js start
+
+# Or using the wrapper
+chmod +x install-run.sh
+./install-run.sh
 ```
 
-**Option 2: Manual Install**
-```bash
-# Install root dependencies
-npm install
+#### 🪟 On Windows
+Use the PowerShell launchers (recommended) or the command prompt:
+```powershell
+# Recommended (PowerShell)
+.\install-run.ps1
 
-# Install backend dependencies
-cd backend
-./venv/bin/pip install -r requirements.txt
-
-# Install frontend dependencies
-cd ../frontend
-npm install
-cd ..
+# Or using Node directly
+node manage.js start
 ```
 
-### Running the Application
+> [!NOTE]
+> If you get a permission error in PowerShell, run: `Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process` before running the script.
 
-**As Ubuntu Desktop App:**
-```bash
-npm run electron
-# or
-./harc-launcher.sh
-```
+## 🏗️ Project Structure (Zero-Root Architecture)
 
-**As Web Application (Development):**
-```bash
-npm run dev
-```
-
-This starts:
-- Backend: http://localhost:8000
-- Frontend: http://localhost:9002
-
-## 📋 Prerequisites
-
-- **Python 3.8+** (Python 3.12 recommended)
-- **Node.js 18+** and npm
-- **Ubuntu/Debian** Linux system
-- **No internet connection required** - Fully offline operation
-
-## 🏗️ Project Structure
+The project follows a strictly isolated architecture where all logic is contained within sub-directories, leaving the root clean for management scripts.
 
 ```
 HARC/
-├── backend/                    # FastAPI Backend
-│   ├── app/
-│   │   ├── api/               # API Routes
-│   │   │   ├── tracking.py    # Human tracking endpoints
-│   │   │   └── system.py      # System endpoints
-│   │   ├── models/            # Pydantic Models
-│   │   └── services/          # Business Logic
-│   │       ├── ai_service.py
-│   │       ├── system_service.py
-│   │       ├── auto_targeting_service.py
-│   │       ├── joystick_service.py
-│   │       ├── motor_controller_service.py
-│   │       └── joystick_motor_bridge.py
-│   ├── hardware_config.json   # Hardware device configuration
-│   ├── requirements.txt       # Python dependencies
-│   └── run.py                 # Backend startup script
-│
-├── frontend/                  # Next.js Frontend
-│   ├── src/
-│   │   ├── app/               # Next.js App Router
-│   │   ├── components/        # React Components
-│   │   ├── lib/               # Utilities & API client
-│   │   └── hooks/             # React hooks
-│   └── package.json
-│
-├── electron/                  # Electron Desktop App
-│   ├── main.js                # Main Electron process
-│   └── preload.js             # Preload script
-│
-├── install.sh                 # Installation script
-├── harc-launcher.sh           # Application launcher
-├── build-app.sh               # Build distribution package
-└── package.json               # Root package.json
+├── backend/                # FASTApi (Python 3.8+)
+│   ├── app/                # Core business logic & services
+│   ├── ml/                 # Machine Learning models & data
+│   ├── hardware_config.json # Device path configurations
+│   └── requirements.txt    # Python dependencies
+├── frontend/               # Next.js (React) + Electron Wrapper
+│   ├── src/                # UI Components & Web Logic
+│   ├── electron/           # Desktop integration (Main/Preload)
+│   ├── assets/             # Branding & Icons
+│   └── package.json        # Main project orchestration
+├── manage.js               # Universal Cross-Platform Manager
+├── install-run.sh          # Linux startup wrapper
+├── install-run.bat         # Windows startup wrapper
+└── build.sh                # Linux distribution builder
 ```
 
-## ✨ Features
+## ✨ Core Features
 
-- **Live Camera Human Tracking** - Real-time human detection from webcam feed
-- **LiDAR Human Tracking** - Human detection from LiDAR point cloud data
-- **Thermal Human Tracking** - Human detection from thermal imaging
-- **Water Cannon Control** - Manual and AI-controlled water cannon system
-- **Auto-Targeting Mode** - ML-based automated target selection and engagement
-- **Joystick Control** - Physical joystick input for manual control
-- **Motor Controller** - Serial communication with motor controller hardware
-- **System Diagnostics** - Real-time monitoring of CPU, GPU, motor, and uptime
-- **Real-time Monitoring** - Live system logs and status updates
-- **Hardware Configuration** - JSON-based device path configuration
+- **Multi-Modal Tracking**: Real-time human detection across Camera feed, LiDAR point clouds, and Thermal imaging.
+- **Auto-Targeting**: ML-based automated target selection and engagement system.
+- **Weapon Control**: Precision motor control for water cannon positioning and pressure regulation.
+- **Joystick Integration**: Support for physical joystick input for manual override.
+- **System Vitals**: Real-time monitoring of CPU, GPU, and Hardware status.
+- **Offline First**: No internet connection required. All AI processing happens locally.
 
 ## 🔧 Hardware Configuration
 
-Configure hardware devices in `backend/hardware_config.json`:
+Device paths are managed in `backend/hardware_config.json`. 
 
-```json
-{
-  "camera": {
-    "enabled": false,
-    "path": "/dev/video0",
-    "type": "v4l2"
-  },
-  "lidar": {
-    "enabled": false,
-    "path": "/dev/ttyUSB0",
-    "type": "serial",
-    "baudrate": 115200
-  },
-  "thermal": {
-    "enabled": false,
-    "path": "/dev/i2c-1",
-    "type": "i2c",
-    "address": "0x5A"
-  },
-  "water_pressure": {
-    "enabled": false,
-    "path": "/dev/ttyACM0",
-    "type": "serial",
-    "baudrate": 9600
-  },
-  "joystick": {
-    "enabled": false,
-    "path": "/dev/input/js0",
-    "type": "linux_joystick"
-  },
-  "motor_controller": {
-    "enabled": false,
-    "path": "/dev/ttyUSB1",
-    "type": "serial",
-    "baudrate": 9600
-  }
-}
-```
+> [!TIP]
+> **Windows Users**: Use COM ports (e.g., `COM3`) for serial devices.
+> **Linux Users**: Use device paths (e.g., `/dev/ttyUSB0`).
 
-### Finding Device Paths
+## ⚙️ Management Commands
 
-**Camera:**
+You can interact with the system using `node manage.js [command]`:
+
+| Command | Description |
+| :--- | :--- |
+| `install` | Sets up venv and installs all dependencies (Python & Node). |
+| `start` | Automatically installs and launches the full system. |
+| `build` | Packages the application into a standalone installer (`.AppImage`/`.deb` or `.exe`). |
+
+## 📦 Building Distribution Packages
+
+To create a standalone installer for your current platform:
 ```bash
-ls -la /dev/video*
-v4l2-ctl --list-devices
+node manage.js build
 ```
-
-**Serial Devices (LiDAR, Motor Controller, Water Pressure):**
-```bash
-ls -la /dev/ttyUSB* /dev/ttyACM*
-dmesg | grep -i tty
-```
-
-**I2C Devices (Thermal):**
-```bash
-ls -la /dev/i2c-*
-i2cdetect -l
-```
-
-**Joystick:**
-```bash
-ls -la /dev/input/js*
-cat /proc/bus/input/devices | grep -A 5 -i joystick
-```
-
-## 🔌 API Endpoints
-
-### Tracking Endpoints
-- `POST /api/tracking/camera` - Track humans from camera feed
-- `POST /api/tracking/lidar` - Track humans from LiDAR data
-- `POST /api/tracking/thermal` - Track humans from thermal imaging
-
-### System Endpoints
-- `GET /api/system/stats?aiMode={mode}` - Get system statistics
-- `GET /api/system/vitals` - Get system vitals (CPU, GPU, motor, uptime)
-- `GET /api/system/logs?category={category}&limit={limit}` - Get system logs
-- `POST /api/system/logs?category={category}&message={message}` - Add system log
-- `GET /api/system/weapon` - Get weapon status
-- `PUT /api/system/weapon/pressure?pressure={value}` - Update water pressure
-- `PUT /api/system/weapon/position?x={x}&y={y}` - Update cannon position
-- `GET /api/system/status` - Get system online status
-- `POST /api/system/auto-targeting/start` - Start auto-targeting mode
-- `POST /api/system/auto-targeting/stop` - Stop auto-targeting mode
-- `GET /api/system/auto-targeting/status` - Get auto-targeting status
-
-### Utility Endpoints
-- `GET /` - API information
-- `GET /health` - Health check
-- `GET /docs` - Swagger API documentation
-
-## ⚙️ Configuration
-
-### Backend Environment Variables (.env)
-
-Create `backend/.env` from `backend/env.example`:
-
-```env
-# OFFLINE MODE - No external API keys needed
-PORT=8000  # Backend port
-```
-
-**Note:** The system runs in **OFFLINE MODE** by default. All AI features use local processing and do not require internet connectivity.
-
-### Frontend Environment Variables (.env.local - optional)
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:8000
-```
-
-## 🛠️ Development
-
-### Backend Development
-```bash
-cd backend
-./venv/bin/python run.py
-```
-- Auto-reloads on file changes
-- API docs: http://localhost:8000/docs
-
-### Frontend Development
-```bash
-cd frontend
-npm run dev
-```
-- Hot-reloads on file changes
-- Runs on: http://localhost:9002
-
-### Run Both Together
-```bash
-npm run dev
-```
-
-## 📦 Building Distribution Package
-
-Create standalone executable:
-
-```bash
-npm run build:electron
-```
-
-This creates:
-- `dist/H.A.R.C. System-*.AppImage` - Portable executable
-- `dist/H.A.R.C. System-*.deb` - Debian package
-
-Or use the build script:
-```bash
-chmod +x build-app.sh
-./build-app.sh
-```
-
-## 🐛 Troubleshooting
-
-### Backend Issues
-
-**Backend won't start:**
-- Install dependencies: `cd backend && ./venv/bin/pip install -r requirements.txt`
-- Check port availability: `lsof -i :8000`
-- Verify Python version: `python3 --version` (needs 3.8+)
-
-**Module not found:**
-- Activate virtual environment: `source backend/venv/bin/activate`
-- Reinstall dependencies: `pip install -r requirements.txt`
-
-**Port already in use:**
-- Change PORT in `backend/.env`
-- Or kill process: `lsof -ti:8000 | xargs kill`
-
-**API key error:**
-- System runs in offline mode - no API keys needed
-
-### Frontend Issues
-
-**Frontend won't start:**
-- Install dependencies: `cd frontend && npm install`
-- Check backend is running: `curl http://localhost:8000/health`
-- Verify Node.js version: `node --version` (needs 18+)
-
-**Cannot connect to backend:**
-- Check backend is running: `curl http://localhost:8000/health`
-- Verify `NEXT_PUBLIC_API_URL` in `.env.local`
-- Check browser console for CORS errors
-
-**Components showing "Loading..." indefinitely:**
-- Backend is not running - start it: `cd backend && ./venv/bin/python run.py`
-- API calls have 5-second timeout - check error messages
-
-### Hardware Issues
-
-**Device not found:**
-- Check device path in `hardware_config.json`
-- Verify device permissions: `ls -la /dev/video0` (should be readable)
-- Add user to groups: `sudo usermod -a -G video,dialout,input $USER`
-- Log out and back in for group changes to take effect
-
-**Permission denied:**
-- Check device permissions: `ls -la /dev/input/js0`
-- May need to run with sudo (not recommended) or fix permissions
-- For serial devices: `sudo chmod 666 /dev/ttyUSB0`
-
-### Electron Issues
-
-**Electron won't start:**
-- Install Electron: `npm install electron electron-builder --save-dev`
-- Check system libraries: May need `sudo apt install libnss3 libatk-bridge2.0-0 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libasound2`
-- Verify Node.js version: `node --version` (needs 18+)
-
-## 📚 Dependencies
-
-### Backend (requirements.txt)
-- `fastapi` - Web framework
-- `uvicorn[standard]` - ASGI server
-- `psutil` - System monitoring
-- `pynvml` - GPU monitoring
-- `python-evdev` - Joystick input
-- `pyserial` - Serial communication
-- `pillow` - Image processing
-- `opencv-python` - Computer vision (offline AI processing)
-- `numpy` - Numerical computing
-
-**Note:** All dependencies are for local/offline processing. No external API calls are made.
-
-### Frontend (package.json)
-- `next` - React framework
-- `react` - UI library
-- `typescript` - Type safety
-- `tailwindcss` - Styling
-- `lucide-react` - Icons
-- `@radix-ui/*` - UI components
-- `recharts` - Charts
-
-### Electron
-- `electron` - Desktop framework
-- `electron-builder` - Packaging tool
-
-## 🌐 Access Points
-
-- **Frontend Dashboard**: http://localhost:9002
-- **Backend API**: http://localhost:8000
-- **API Documentation**: http://localhost:8000/docs
-- **Health Check**: http://localhost:8000/health
-
-## 📝 System Modes
-
-### Manual Mode
-- User controls water cannon position and pressure manually
-- Joystick input (if enabled) controls motor movement
-- No automatic targeting
-
-### Full Auto Mode
-- ML-based auto-targeting service enabled
-- Automatically selects targets based on scoring algorithm
-- Automatically positions cannon and engages targets
-- Processes camera feed for human detection
-
-## 🔄 Data Flow
-
-1. **User Action** → Frontend component
-2. **API Call** → `src/lib/api.ts` (with 5-second timeout)
-3. **HTTP Request** → Backend FastAPI endpoint
-4. **Processing** → Service layer (AI, System, Hardware)
-5. **AI Analysis** → Local offline processing (OpenCV, local algorithms)
-6. **Hardware I/O** → Device communication (if enabled)
-7. **Response** → Pydantic models → JSON
-8. **Display** → Frontend renders results
-
-**All processing is done locally - no internet connection required.**
+Output files will be generated in `frontend/dist/`.
 
 ## 📄 License
-
 Private project - All rights reserved
 
 ---
-
-**Version**: 1.0.0  
-**Last Updated**: December 2024
+**Version**: 1.1.0 (Zero-Root / Cross-Platform)
+**Last Updated**: April 2026
