@@ -7,15 +7,15 @@ let mainWindow;
 let backendProcess;
 let frontendProcess;
 
-// Paths
-const BACKEND_DIR = path.join(__dirname, '..', 'backend');
-const FRONTEND_DIR = path.join(__dirname, '..', 'frontend');
+// Paths - Updated for new location in frontend/electron/
+const BACKEND_DIR = path.join(__dirname, '..', '..', 'backend');
+const FRONTEND_DIR = path.join(__dirname, '..');
 const BACKEND_SCRIPT = path.join(BACKEND_DIR, 'run.py');
 const FRONTEND_SCRIPT = path.join(FRONTEND_DIR, 'node_modules', '.bin', 'next');
 
 function createWindow() {
   // Create the browser window
-  const iconPath = path.join(__dirname, '..', 'assets', 'icon.png');
+  const iconPath = path.join(__dirname, '..', '..', 'assets', 'icon.png');
   const hasIcon = fs.existsSync(iconPath);
   
   mainWindow = new BrowserWindow({
@@ -232,6 +232,7 @@ function waitForFrontend(callback, maxAttempts = 30) {
 function startFrontend() {
   console.log('Starting frontend server...');
   
+  // In development, we run 'npm run dev' inside the frontend directory
   frontendProcess = spawn('npm', ['run', 'dev'], {
     cwd: FRONTEND_DIR,
     shell: true,
@@ -340,4 +341,3 @@ app.on('before-quit', () => {
     frontendProcess.kill();
   }
 });
-
